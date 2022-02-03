@@ -1,5 +1,17 @@
 let startGame = false;
 let numberCards = 0;
+let countCliks = 0;
+const arrayCards = [
+  "./images/bobrossparrot.gif",
+  "./images/explodyparrot.gif",
+  "./images/fiestaparrot.gif",
+  "./images/metalparrot.gif",
+  "./images/revertitparrot.gif",
+  "./images/tripletsparrot.gif",
+  "./images/unicornparrot.gif",
+];
+let arrayCardsGame = [];
+
 while (!startGame) {
   if (numberCards % 2 === 0 && numberCards >= 4 && numberCards <= 14) {
     break;
@@ -14,10 +26,30 @@ while (!startGame) {
 const firstLine = document.querySelector(".first-line");
 const lastLine = document.querySelector(".last-line");
 
-const cardGameFactory =
-  '<div class="front-card-game"><img src="./images/front.png" alt="" /></div>';
+for (i = 0; i < numberCards; i++) {
+  arrayCardsGame.push(arrayCards[i]);
+  arrayCardsGame.push(arrayCards[i]);
+  arrayCardsGame.sort(comparate);
+}
+let cardGameFactory = "";
 
-for (i = 0; i < numberCards / 2; i++) {
-  firstLine.innerHTML += cardGameFactory;
-  lastLine.innerHTML += cardGameFactory;
+for (let i = 0; i < numberCards; i++) {
+  cardGameFactory = `<div class="card" onclick="rotateCard(this)"><div class="front-card-game face"><img src="./images/front.png" alt="" /></div><div class="back-card-game face"><img src="${arrayCardsGame[i]}" alt="" /></div></div>`;
+  if (i % 2 == 0) {
+    firstLine.innerHTML += cardGameFactory;
+  } else {
+    lastLine.innerHTML += cardGameFactory;
+  }
+}
+
+function rotateCard(card) {
+  const frontCard = document.querySelector(".front-card-game");
+  const backCard = document.querySelector(".back-card-game");
+
+  frontCard.classList.toggle("rotate-front");
+  backCard.classList.toggle("rotate-back");
+}
+
+function comparate() {
+  return Math.random() - 0.5;
 }
