@@ -3,11 +3,18 @@ let numberCards = 0;
 let countCliks = 0;
 const arrayCards = [
   "./images/bobrossparrot.gif",
+  "./images/bobrossparrot.gif",
+  "./images/explodyparrot.gif",
   "./images/explodyparrot.gif",
   "./images/fiestaparrot.gif",
+  "./images/fiestaparrot.gif",
+  "./images/metalparrot.gif",
   "./images/metalparrot.gif",
   "./images/revertitparrot.gif",
+  "./images/revertitparrot.gif",
   "./images/tripletsparrot.gif",
+  "./images/tripletsparrot.gif",
+  "./images/unicornparrot.gif",
   "./images/unicornparrot.gif",
 ];
 let arrayCardsGame = [];
@@ -28,7 +35,6 @@ const lastLine = document.querySelector(".last-line");
 
 for (i = 0; i < numberCards; i++) {
   arrayCardsGame.push(arrayCards[i]);
-  arrayCardsGame.push(arrayCards[i]);
   arrayCardsGame.sort(comparate);
 }
 let cardGameFactory = "";
@@ -43,8 +49,8 @@ for (let i = 0; i < numberCards; i++) {
 }
 
 function rotateCard(card) {
-  const frontCard = document.querySelector(".front-card-game");
-  const backCard = document.querySelector(".back-card-game");
+  const frontCard = card.querySelector(".front-card-game");
+  const backCard = card.querySelector(".back-card-game");
 
   frontCard.classList.toggle("rotate-front");
   backCard.classList.toggle("rotate-back");
