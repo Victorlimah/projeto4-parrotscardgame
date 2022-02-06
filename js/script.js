@@ -1,5 +1,5 @@
-const firstLine = document.querySelector(".first-line");
-const lastLine = document.querySelector(".last-line");
+const lineCards = document.querySelector(".line-cards");
+
 const parrotsGifs = [
   "bobrossparrot.gif",
   "explodyparrot.gif",
@@ -32,87 +32,77 @@ function startGame() {
 }
 
 function generateCard(numberCards) {
-  cardFactory(numberCards, firstLine);
-
-  cardFactory(numberCards, lastLine);
-  // DISTRIBUINDO AS CARTAS EM DUAS LINHAS
-}
-
-function cardFactory(numberCards, line) {
-  cardCreate = "";
+  cardFactory = "";
   parrotsInTheGame.sort(randomize);
-  for (let parrot = 0; parrot < numberCards / 2; parrot++) {
-    cardCreate += `<div onclick="flipCard(this);" class="card-game" id="card${parrot}">
+  for (let parrot = 0; parrot < numberCards; parrot++) {
+    cardFactory += `<div onclick="flipCard(this);" class="card-game ${parrotsInTheGame[parrot]}">
   <img class="front-card" src="./images/${parrotsInTheGame[parrot]}"/>
   <img class="back-card" src="./images/front.png">
   </div>`;
-    parrotsInTheGame.splice(parrot, 1);
   }
 
-  line.innerHTML = cardCreate;
+  lineCards.innerHTML = cardFactory;
 }
+
 const cards = document.querySelectorAll(".card-game");
-let firstCard, secondCard;
+let clickFirstCard = false;
+let clickSecondCard = false;
+let firstCard = null;
+let secondCard = null;
 let lockFlip = false;
+let listFirst = null;
+let listSecond = null;
+let frontCard = null;
+let backCard = null;
 
 function flipCard(card) {
-  const frontCard = card.querySelector(".front-card");
-  const backCard = card.querySelector(".back-card");
+  frontCard = card.querySelector(".front-card");
+  backCard = card.querySelector(".back-card");
+  frontCard.classList.add("rotate-front");
+  backCard.classList.add("rotate-back");
 
-  if (lockFlip) return false;
-  frontCard.classList.toggle("rotate-front");
-  backCard.classList.toggle("rotate-back");
-
-  if (!firstCard) {
+  if (!clickFirstCard) {
     firstCard = card;
-    return false;
-  }
-  secondCard = card;
-
-  checkCards();
-}
-
-function checkCards() {
-  let isMatch = firstCard.dataset.card === secondCard.dataset.card;
-
-  // Mudar para operador ternario ;-;
-  if (!isMatch) {
-    unFlipCards();
-  }
-  resetCards(isMatch);
-}
-
-function unFlipCards() {
-  lockFlip = true;
-  setTimeout(() => {
-    firstCard.classList.remove("flip");
-    secondCard.classList.remove("flip");
-
-    resetCards();
-  }, 1200);
-}
-
-(function shuffle() {
-  cards.forEach((card) => {
-    let rand = Math.floor(Math.random() * 14);
-    card.style.order = rand;
-  });
-})();
-
-function resetCards(isMatch = false) {
-  if (isMatch) {
-    firstCard.removeEventListener("click", flipCard);
-    secondCard.removeEventListener("click", flipCard);
+    clickFirstCard = true;
+  } else {
+    secondCard = card;
+    clickSecondCard = true;
   }
 
-  firstCard = null;
-  secondCard = null;
-  lockFlip = false;
+  if (clickFirstCard && clickSecondCard) {
+    listFirst = firstCard.classList;
+    listSecond = secondCard.classList;
+    if (listFirst[1] == listSecond[1]) {
+      alert("é igual cria");
+      resetCards();
+    } else {
+      setTimeout(onFlipCard, 2000);
+      resetCards();
+    }
+  }
 }
 
+//só ta virando a segunda carta
+function onFlipCard() {
+  firstFrontCard = firstCard.querySelector(".front-card");
+  firstBackCard = firstCard.querySelector(".back-card");
+
+  secondFrontCard = secondCard.querySelector(".front-card");
+  secondBackCard = secondCard.querySelector(".back-card");
+
+  firstFrontCard.classList.remove("rotate-front");
+  firstBackCard.classList.remove("rotate-back");
+  secondFrontCard.classList.remove("rotate-front");
+  secondBackCard.classList.remove("rotate-back");
+}
 function randomize() {
   return Math.random() - 0.5;
 }
 
-cards.forEach((card) => card.addEventListener("click", flipCard));
+function resetCards() {
+  clickFirstCard = false;
+  clickSecondCard = false;
+  listFirst = null;
+  listSecond = null;
+}
 startGame();
