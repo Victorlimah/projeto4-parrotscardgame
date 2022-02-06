@@ -1,61 +1,118 @@
-let startGame = false;
-let numberCards = 0;
-let countCliks = 0;
-const arrayCards = [
-  "./images/bobrossparrot.gif",
-  "./images/bobrossparrot.gif",
-  "./images/explodyparrot.gif",
-  "./images/explodyparrot.gif",
-  "./images/fiestaparrot.gif",
-  "./images/fiestaparrot.gif",
-  "./images/metalparrot.gif",
-  "./images/metalparrot.gif",
-  "./images/revertitparrot.gif",
-  "./images/revertitparrot.gif",
-  "./images/tripletsparrot.gif",
-  "./images/tripletsparrot.gif",
-  "./images/unicornparrot.gif",
-  "./images/unicornparrot.gif",
-];
-let arrayCardsGame = [];
-
-while (!startGame) {
-  if (numberCards % 2 === 0 && numberCards >= 4 && numberCards <= 14) {
-    break;
-  }
-  numberCards = parseInt(
-    prompt(
-      "Digite a quantidade de cartas que quer jogar (Use números pares entre 4 e 14): "
-    )
-  );
-}
-
 const firstLine = document.querySelector(".first-line");
 const lastLine = document.querySelector(".last-line");
+const parrotsGifs = [
+  "bobrossparrot.gif",
+  "explodyparrot.gif",
+  "fiestaparrot.gif",
+  "metalparrot.gif",
+  "revertitparrot.gif",
+  "tripletsparrot.gif",
+  "unicornparrot.gif",
+];
+let parrotsInTheGame = [];
 
-for (i = 0; i < numberCards; i++) {
-  arrayCardsGame.push(arrayCards[i]);
-  arrayCardsGame.sort(comparate);
-}
-let cardGameFactory = "";
+let cardCreate = "";
+let numberCards = 0;
 
-for (let i = 0; i < numberCards; i++) {
-  cardGameFactory = `<div class="card" onclick="rotateCard(this)"><div class="front-card-game face"><img src="./images/front.png" alt="" /></div><div class="back-card-game face"><img src="${arrayCardsGame[i]}" alt="" /></div></div>`;
-  if (i % 2 == 0) {
-    firstLine.innerHTML += cardGameFactory;
-  } else {
-    lastLine.innerHTML += cardGameFactory;
+// PERGUNTA COM QUANTAS CARTAS O USUÁRIO QUER JOGAR
+function startGame() {
+  do {
+    numberCards = parseInt(
+      prompt(
+        "Digite a quantidade de cartas que quer jogar (Use números pares entre 4 e 14): "
+      )
+    );
+  } while (!(numberCards % 2 === 0 && numberCards >= 4 && numberCards <= 14));
+
+  for (let i = 0; i < numberCards / 2; i++) {
+    parrotsInTheGame.push(parrotsGifs[i]);
+    parrotsInTheGame.push(parrotsGifs[i]);
   }
+  generateCard(numberCards);
 }
 
-function rotateCard(card) {
-  const frontCard = card.querySelector(".front-card-game");
-  const backCard = card.querySelector(".back-card-game");
+function generateCard(numberCards) {
+  cardFactory(numberCards, firstLine);
 
+  cardFactory(numberCards, lastLine);
+  // DISTRIBUINDO AS CARTAS EM DUAS LINHAS
+}
+
+function cardFactory(numberCards, line) {
+  cardCreate = "";
+  parrotsInTheGame.sort(randomize);
+  for (let parrot = 0; parrot < numberCards / 2; parrot++) {
+    cardCreate += `<div onclick="flipCard(this);" class="card-game" id="card${parrot}">
+  <img class="front-card" src="./images/${parrotsInTheGame[parrot]}"/>
+  <img class="back-card" src="./images/front.png">
+  </div>`;
+    parrotsInTheGame.splice(parrot, 1);
+  }
+
+  line.innerHTML = cardCreate;
+}
+const cards = document.querySelectorAll(".card-game");
+let firstCard, secondCard;
+let lockFlip = false;
+
+function flipCard(card) {
+  const frontCard = card.querySelector(".front-card");
+  const backCard = card.querySelector(".back-card");
+
+  if (lockFlip) return false;
   frontCard.classList.toggle("rotate-front");
   backCard.classList.toggle("rotate-back");
+
+  if (!firstCard) {
+    firstCard = card;
+    return false;
+  }
+  secondCard = card;
+
+  checkCards();
 }
 
-function comparate() {
+function checkCards() {
+  let isMatch = firstCard.dataset.card === secondCard.dataset.card;
+
+  // Mudar para operador ternario ;-;
+  if (!isMatch) {
+    unFlipCards();
+  }
+  resetCards(isMatch);
+}
+
+function unFlipCards() {
+  lockFlip = true;
+  setTimeout(() => {
+    firstCard.classList.remove("flip");
+    secondCard.classList.remove("flip");
+
+    resetCards();
+  }, 1200);
+}
+
+(function shuffle() {
+  cards.forEach((card) => {
+    let rand = Math.floor(Math.random() * 14);
+    card.style.order = rand;
+  });
+})();
+
+function resetCards(isMatch = false) {
+  if (isMatch) {
+    firstCard.removeEventListener("click", flipCard);
+    secondCard.removeEventListener("click", flipCard);
+  }
+
+  firstCard = null;
+  secondCard = null;
+  lockFlip = false;
+}
+
+function randomize() {
   return Math.random() - 0.5;
 }
+
+cards.forEach((card) => card.addEventListener("click", flipCard));
+startGame();

@@ -41,40 +41,42 @@ section div {
   flex-wrap: wrap;
 }
 
-.card {
+.card-game {
   width: 117px;
   height: 146px;
-  margin: 10px 25px 10px 25px;
+  margin: 10px 18px 10px 18px;
   position: relative;
+  background-color: #a7e9af;
 }
 
-.face {
+.card-game:active {
+  transform: scale(0.97);
+}
+
+.flip {
+  transform: rotateY(180deg);
+}
+
+.front-card,
+.back-card {
   width: 100%;
   height: 100%;
-  background-color: #a7e9af;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  padding: 20px;
+  position: absolute;
   backface-visibility: hidden;
   transition: all 0.5s;
   transform-style: preserve-3d;
   position: absolute;
 }
 
-.card img {
-  width: 100px;
-  height: 100px;
-}
-
-.back-card-game {
+.front-card {
   transform: rotateY(180deg);
 }
 
-.rotate-back {
+.rotate-front {
   transform: rotateY(0deg);
 }
 
-.rotate-front {
+.rotate-back {
   transform: rotateY(-180deg);
 }
