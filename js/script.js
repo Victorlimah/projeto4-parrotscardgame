@@ -13,8 +13,10 @@ let parrotsInTheGame = [];
 
 let cardCreate = "";
 let numberCards = 0;
+let numberMatch = 0;
+let countPlays = 0;
+let cardsMatch = [];
 
-// PERGUNTA COM QUANTAS CARTAS O USUÁRIO QUER JOGAR
 function startGame() {
   do {
     numberCards = parseInt(
@@ -44,7 +46,6 @@ function generateCard(numberCards) {
   lineCards.innerHTML = cardFactory;
 }
 
-const cards = document.querySelectorAll(".card-game");
 let clickFirstCard = false;
 let clickSecondCard = false;
 let firstCard = null;
@@ -67,23 +68,55 @@ function flipCard(card) {
   } else {
     secondCard = card;
     clickSecondCard = true;
+    countPlays++;
+    lockCard();
   }
 
   if (clickFirstCard && clickSecondCard) {
     listFirst = firstCard.classList;
     listSecond = secondCard.classList;
     if (listFirst[1] == listSecond[1]) {
-      alert("é igual cria");
+      setTimeout(addMatchShadow, 1000);
       resetCards();
     } else {
-      setTimeout(onFlipCard, 2000);
+      setTimeout(unFlipCard, 1000);
       resetCards();
+    }
+  }
+  setTimeout(winGame, 1600);
+}
+
+function winGame() {
+  if (numberCards / 2 == numberMatch) {
+    alert(`Você ganhou em ${countPlays} jogadas!`);
+    let playAgain = prompt(
+      "Deseja jogar novamente? ('s' para sim ou 'n' para não)"
+    );
+    if (playAgain === "n") {
+      alert("Jogo encerrado, volte sempre!");
+    } else if (playAgain === "s") {
+      startGame();
+      countPlays = 0;
+      numberMatch = 0;
+      resetCards();
+      cardsMatch = [];
+      parrotsInTheGame = [];
     }
   }
 }
 
-//só ta virando a segunda carta
-function onFlipCard() {
+function addMatchShadow() {
+  firstCard.classList.add("shadow-match");
+  secondCard.classList.add("shadow-match");
+
+  cardsMatch.push(firstCard);
+  cardsMatch.push(secondCard);
+  unlockCards();
+
+  numberMatch++;
+}
+
+function unFlipCard() {
   firstFrontCard = firstCard.querySelector(".front-card");
   firstBackCard = firstCard.querySelector(".back-card");
 
@@ -94,6 +127,7 @@ function onFlipCard() {
   firstBackCard.classList.remove("rotate-back");
   secondFrontCard.classList.remove("rotate-front");
   secondBackCard.classList.remove("rotate-back");
+  unlockCards();
 }
 function randomize() {
   return Math.random() - 0.5;
@@ -105,4 +139,22 @@ function resetCards() {
   listFirst = null;
   listSecond = null;
 }
+
+function lockCard() {
+  for (let i = 0; i < cards.length; i++) {
+    let item = cards[i];
+    item.removeAttribute("onclick");
+  }
+}
+
+function unlockCards() {
+  for (let i = 0; i < cards.length; i++) {
+    let item = cards[i];
+    item.setAttribute("onclick", "flipCard(this);");
+  }
+  for (let i = 0; i < cardsMatch.length; i++) {
+    cardsMatch[i].removeAttribute("onclick");
+  }
+}
 startGame();
+let cards = document.querySelectorAll(".card-game");
