@@ -1,9 +1,11 @@
 const lineCards = document.querySelector(".line-cards");
+const timer = document.querySelector(".timer");
 
 let cardCreate = "";
 let numberCards = 0;
 let numberMatch = 0;
 let countPlays = 0;
+let interval = null;
 let cardsMatch = [];
 let parrotsInTheGame = [];
 const parrotsGifs = [
@@ -15,6 +17,13 @@ const parrotsGifs = [
   "tripletsparrot.gif",
   "unicornparrot.gif",
 ];
+
+function timePassing() {
+  timer.innerHTML = parseInt(timer.innerHTML) + 1;
+  if (numberCards / 2 == numberMatch) {
+    clearInterval(interval);
+  }
+}
 
 function startGame() {
   do {
@@ -43,6 +52,7 @@ function generateCard(numberCards) {
   }
 
   lineCards.innerHTML = cardFactory;
+  interval = setInterval(timePassing, 1000);
 }
 startGame();
 let cards = document.querySelectorAll(".card-game");
@@ -65,11 +75,11 @@ function flipCard(card) {
   if (!clickFirstCard) {
     firstCard = card;
     clickFirstCard = true;
+    card.removeAttribute("onclick");
     countPlays++;
   } else {
     secondCard = card;
     clickSecondCard = true;
-
     lockCard();
   }
 
@@ -88,8 +98,9 @@ function flipCard(card) {
 }
 
 function winGame() {
+  let timeWin = timer.innerHTML;
   if (numberCards / 2 == numberMatch) {
-    alert(`Você ganhou em ${countPlays} jogadas!`);
+    alert(`Você ganhou em ${countPlays} jogadas, e em ${timeWin} segundos!`);
     let playAgain = prompt(
       "Deseja jogar novamente? ('s' para sim ou 'n' para não)"
     );
@@ -137,11 +148,16 @@ function resetCards() {
 }
 
 function newGame() {
+  firstCard = null;
+  secondCard = null;
+  lockFlip = false;
   countPlays = 0;
   numberMatch = 0;
-  resetCards();
   cardsMatch = [];
   parrotsInTheGame = [];
+  timer.innerHTML = 0;
+  clearInterval(interval);
+  resetCards();
   startGame();
 }
 
