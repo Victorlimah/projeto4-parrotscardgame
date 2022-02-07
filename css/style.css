@@ -5,21 +5,31 @@
 body {
   background-color: #eef9bf;
   font-family: "Roboto", sans-serif;
-}
-
-/* MAIN E HEADER */
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-div {
   display: flex;
   justify-content: center;
 }
 
+/* MAIN E HEADER */
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  /*align-items: flex-start;*/
+  justify-content: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+.name-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 div h1 {
-  margin: 40px 0 40px 0;
+  margin: 40px auto 40px auto;
   font-weight: bold;
   font-size: 56px;
   line-height: 66px;
@@ -30,14 +40,13 @@ div h1 {
 /* CARDS */
 
 section {
-  width: 1169px;
+  width: 90vw;
   height: 343px;
 }
 
 section div {
-  height: 50%;
-  display: flex;
-  justify-content: center;
+  display: flex; /* Acho que essas duas linhas estão redundantes */
+  justify-content: center; /* Por causa das linhas 25 e 26 */
   flex-wrap: wrap;
 }
 
@@ -55,6 +64,13 @@ section div {
 
 .flip {
   transform: rotateY(180deg);
+}
+
+.line-cards {
+  width: 90vw;
+  /*display: flex;
+  justify-content: center;
+  align-items: center;*/
 }
 
 .front-card,
@@ -84,4 +100,17 @@ section div {
 .shadow-match {
   box-shadow: 0px 0px 10px -4px rgba(0, 0, 0, 0.25),
     inset 0px 0px 0px 5px #32b72f;
+}
+
+/* VERSÃO RESPONSIVA */
+
+@media (max-width: 614px) {
+  div h1 {
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 42px;
+    text-align: center;
+    letter-spacing: -0.004em;
+    color: #75b79e;
+  }
 }

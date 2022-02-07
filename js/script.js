@@ -1,5 +1,11 @@
 const lineCards = document.querySelector(".line-cards");
 
+let cardCreate = "";
+let numberCards = 0;
+let numberMatch = 0;
+let countPlays = 0;
+let cardsMatch = [];
+let parrotsInTheGame = [];
 const parrotsGifs = [
   "bobrossparrot.gif",
   "explodyparrot.gif",
@@ -9,13 +15,6 @@ const parrotsGifs = [
   "tripletsparrot.gif",
   "unicornparrot.gif",
 ];
-let parrotsInTheGame = [];
-
-let cardCreate = "";
-let numberCards = 0;
-let numberMatch = 0;
-let countPlays = 0;
-let cardsMatch = [];
 
 function startGame() {
   do {
@@ -37,15 +36,16 @@ function generateCard(numberCards) {
   cardFactory = "";
   parrotsInTheGame.sort(randomize);
   for (let parrot = 0; parrot < numberCards; parrot++) {
-    cardFactory += `<div onclick="flipCard(this);" class="card-game ${parrotsInTheGame[parrot]}">
-  <img class="front-card" src="./images/${parrotsInTheGame[parrot]}"/>
-  <img class="back-card" src="./images/front.png">
+    cardFactory += `<div onclick="flipCard(this);" class="card-game ${parrotsInTheGame[parrot]}" data-identifier="card">
+  <img class="front-card" data-identifier="front-face" src="./images/${parrotsInTheGame[parrot]}"/>
+  <img class="back-card" data-identifier="back-face" src="./images/front.png">
   </div>`;
   }
 
   lineCards.innerHTML = cardFactory;
 }
-
+startGame();
+let cards = document.querySelectorAll(".card-game");
 let clickFirstCard = false;
 let clickSecondCard = false;
 let firstCard = null;
@@ -65,10 +65,11 @@ function flipCard(card) {
   if (!clickFirstCard) {
     firstCard = card;
     clickFirstCard = true;
+    countPlays++;
   } else {
     secondCard = card;
     clickSecondCard = true;
-    countPlays++;
+
     lockCard();
   }
 
@@ -95,12 +96,7 @@ function winGame() {
     if (playAgain === "n") {
       alert("Jogo encerrado, volte sempre!");
     } else if (playAgain === "s") {
-      startGame();
-      countPlays = 0;
-      numberMatch = 0;
-      resetCards();
-      cardsMatch = [];
-      parrotsInTheGame = [];
+      newGame();
     }
   }
 }
@@ -140,6 +136,15 @@ function resetCards() {
   listSecond = null;
 }
 
+function newGame() {
+  countPlays = 0;
+  numberMatch = 0;
+  resetCards();
+  cardsMatch = [];
+  parrotsInTheGame = [];
+  startGame();
+}
+
 function lockCard() {
   for (let i = 0; i < cards.length; i++) {
     let item = cards[i];
@@ -156,5 +161,3 @@ function unlockCards() {
     cardsMatch[i].removeAttribute("onclick");
   }
 }
-startGame();
-let cards = document.querySelectorAll(".card-game");
